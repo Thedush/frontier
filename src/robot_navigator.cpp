@@ -17,8 +17,8 @@ RobotNavigator::RobotNavigator() {
   ros::NodeHandle robot_node_pravite("~/");
 
   robot_node_pravite.param("map_frame", map_frame_, std::string("map"));
-  robot_node_pravite.param("robot_frame", robot_frame_, std::string("robot"));
-  robot_node_pravite.param("update_frequency", update_frequency_, 1.0);
+  robot_node_pravite.param("robot_frame", robot_frame_, std::string("base_link"));
+  robot_node_pravite.param("update_frequency", update_frequency_, 2.0);
   robot_node_pravite.param("explore_action_topic", explore_action_topic_,
       std::string(NAV_EXPLORE_ACTION));
 
@@ -35,10 +35,10 @@ RobotNavigator::RobotNavigator() {
   is_paused_ = false;
   goal_publisher_ = robot_node.advertise<geometry_msgs::PoseStamped>(
       "/move_base_simple/goal", 2);
-  map_sub_ = robot_node.subscribe("/move_base_node/global_costmap/costmap", 1,
+  map_sub_ = robot_node.subscribe("/move_base/global_costmap/costmap", 1,
       &RobotNavigator::mapCallback, this);
   ros::Duration(1.0).sleep();
-  scan_sub_ = robot_node.subscribe("/base_scan", 1,
+  scan_sub_ = robot_node.subscribe("/front/scan", 1,
       &RobotNavigator::scanCallback, this);
 }
 
@@ -102,7 +102,7 @@ void RobotNavigator::receiveExploreGoal(
       stop();
       return;
     }
-
+    std::cout << "hi 1" ;
     goal_point_ = current_map_.getSize();
     if ( preparePlan() ) {
       ROS_INFO("exploration: start = %u, end = %u.", start_point_, goal_point_);
