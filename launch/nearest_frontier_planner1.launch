@@ -8,7 +8,7 @@
     <param name="robot_frame" value="base_link" />
   </node>
 
-
+ <node name="Explore" pkg="nearest_frontier_planner" type="nfp_explore_client" output="screen"/>
 
 
 </launch>

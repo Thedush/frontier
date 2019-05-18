@@ -102,7 +102,7 @@ void RobotNavigator::receiveExploreGoal(
       stop();
       return;
     }
-    std::cout << "hi 1" ;
+    std::cout <<  has_new_map_;
     goal_point_ = current_map_.getSize();
     if ( preparePlan() ) {
       ROS_INFO("exploration: start = %u, end = %u.", start_point_, goal_point_);
@@ -219,6 +219,7 @@ void RobotNavigator::mapCallback(const nav_msgs::OccupancyGrid& global_map) {
   if ( !has_new_map_ ) {
     current_map_.update(global_map);
     current_map_.setLethalCost(80);
+    std::cout << "map received";
     has_new_map_ = true;
   }
 }
@@ -295,9 +296,9 @@ void RobotNavigator::scanCallback(const sensor_msgs::LaserScan& scan) {
 
   longest_distance_ = best_range;
   angles_ = best_angle;
-  ROS_INFO_STREAM("range: " << longest_distance_
-      << ", angle: " << angles_
-      << ", score: " << highest_score);
+  // ROS_INFO_STREAM("range: " << longest_distance_
+      // << ", angle: " << angles_
+      // << ", score: " << highest_score);
 
 }
 
