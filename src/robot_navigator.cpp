@@ -102,18 +102,19 @@ void RobotNavigator::receiveExploreGoal(
       stop();
       return;
     }
-    std::cout <<  has_new_map_;
+    // std::cout <<  has_new_map_;
     goal_point_ = current_map_.getSize();
     if ( preparePlan() ) {
       ROS_INFO("exploration: start = %u, end = %u.", start_point_, goal_point_);
       int result = exploration_planner_.findExplorationTarget(&current_map_,
           start_point_, goal_point_);
+      // std::cout << "result of find" << result << std::endl;
       ROS_INFO("exploration: start = %u, end = %u.", start_point_, goal_point_);
       unsigned int x_start = 0, y_start = 0;
       current_map_.getCoordinates(x_start, y_start, start_point_);
       ROS_INFO("start: x = %u, y = %u", x_start, y_start);
       unsigned int x_stop = 0, y_stop = 0;
-
+      std::cout << current_map_.getResolution();
 
       double x_ = x_start * current_map_.getResolution() +
         current_map_.getOriginX();
@@ -124,17 +125,20 @@ void RobotNavigator::receiveExploreGoal(
       double x, y;
       bool no_vaild_goal = false;
       if ( goal_point_ == current_map_.getSize() ) {
+        std::cout << "map size" << current_map_.getSize() << std::endl;
         x = x_start * current_map_.getResolution() +
           current_map_.getOriginX();
         y = y_start * current_map_.getResolution() +
           current_map_.getOriginY();
       } else {
+        // std::cout << " getting xtop and y stop " << std::endl;
         current_map_.getCoordinates(x_stop, y_stop, goal_point_);
         std::cout << "start: " << x_start << ", " << y_start << ";  stop: "
           << x_stop << ", " << y_stop << std::endl;
 
         if ( ((x_start - x_stop) * (x_start - x_stop) +
-              (y_start - y_stop) * (y_start - y_stop)) <= 25 ) {
+              (y_start - y_stop) * (y_start - y_stop)) <= 100 ) {
+                std::cout << " length less than 25" << std::endl;
           x = x_start * current_map_.getResolution() +
             current_map_.getOriginX() +
             (longest_distance_ - 1) * cos(angles_);
@@ -155,6 +159,7 @@ void RobotNavigator::receiveExploreGoal(
           no_vaild_goal = true;
           ROS_INFO("longest_distance_: %f, angles_: %f", longest_distance_, angles_);
         } else {
+          std::cout << " length greater than 25" << std::endl;
           x = x_stop * current_map_.getResolution() +
             current_map_.getOriginX();
           y = y_stop * current_map_.getResolution() +
@@ -218,7 +223,7 @@ bool RobotNavigator::setCurrentPosition() {
 void RobotNavigator::mapCallback(const nav_msgs::OccupancyGrid& global_map) {
   if ( !has_new_map_ ) {
     current_map_.update(global_map);
-    current_map_.setLethalCost(80);
+    current_map_.setLethalCost(40);
     std::cout << "map received";
     has_new_map_ = true;
   }
@@ -283,11 +288,11 @@ void RobotNavigator::scanCallback(const sensor_msgs::LaserScan& scan) {
     } else {
       if ( index == 0 ) in_inf_range = true;
 
-      if ( !in_inf_range ) {
-        std::cout << "in_inf_range angle: " << angle
-          << ", range: " << scan.ranges[index-1]
-          << ", score: " << scoreLine(angle, scan.ranges[index-1]) << std::endl;
-      }
+      // if ( !in_inf_range ) {
+      //   std::cout << "in_inf_range angle: " << angle
+      //     << ", range: " << scan.ranges[index-1]
+      //     << ", score: " << scoreLine(angle, scan.ranges[index-1]) << std::endl;
+      // }
     }
 
     index++;

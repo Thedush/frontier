@@ -70,6 +70,7 @@ class GridMap {
   bool isFrontier(unsigned int index) {
     int y = index / map_width_;
     int x = index % map_width_;
+    // std::cout << x << "y  "<<y << "value " << getData(x, y) << std::endl ;
 
     if ( getData(x-1, y-1) == -1 ) return true;
     if ( getData(x-1, y  ) == -1 ) return true;

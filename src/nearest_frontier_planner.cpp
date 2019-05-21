@@ -15,6 +15,7 @@ int NearestFrontierPlanner::findExplorationTarget(GridMap* map,
   // Initialize the queue with the robot position
   Queue queue;
   Entry start_point(0.0, start);
+  std::cout <<"      " << queue.size();
   queue.insert(start_point);
   plan[start] = 0;
 
@@ -31,11 +32,13 @@ int NearestFrontierPlanner::findExplorationTarget(GridMap* map,
     next = queue.begin();
     distance = next->first;
     unsigned int index = next->second;
+    // std::cout << next->first << next->second ;
     queue.erase(next);
 
     // Add all adjacent cells
     if ( map->isFrontier(index) ) {
       // We reached the border of the map, which is unexplored terrain as well:
+      std::cout<<"got frontier   ";
       found_frontier = true;
       goal = index;
       break;
@@ -50,13 +53,18 @@ int NearestFrontierPlanner::findExplorationTarget(GridMap* map,
       for ( unsigned int it = 0; it < 4; it++ ) {
         unsigned int i = ind[it];
         if ( map->isFree(i) && plan[i] == -1 ) {
+          // std::cout << plan[i];
           queue.insert(Entry(distance+linear, i));
           plan[i] = distance+linear;
+          // std::cout << " "  << plan[i];
         }
+        
       }
+      // std::cout << "   ";
     }
   }
-
+   std::cout << "size    "  << queue.size();
+  std::cout << "Checked %d cells." << cell_count << "  width " << map->getWidth();
   ROS_DEBUG("Checked %d cells.", cell_count);
   delete[] plan;
 
