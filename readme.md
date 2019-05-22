@@ -20,3 +20,6 @@ roslaunch navigation_stage move_base_icpslam_5cm.launch
 roslaunch nearest_frontier_planner tutorial3_icp_nfp.launch
 rosservice call /StartExploration
 ```
+  track_unknown_space: true
+  
+  always_send_full_costmap: true
